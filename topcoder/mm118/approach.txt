@@ -1,0 +1,18 @@
+My solution is an ugly mess since originally I assumed that I'm going to spend significant time on it. Failed at that. And then on the last day, frantically tried to squeeze out as many points as possible.
+
+My basic solution is SA with kicks (random forced perturbations). My solution for single color is similar to what sullyper described.
+
+My moves are: (a) erase and create new path (b) modify existing path in a way that affects only 2 cells.
+The idea behind having only very short moves was to synergize with O(1) eval [not implemented] function cell-based and edge-based [not implemented] and with only 2 affected cells you can write a fast heuristic that in O(1) will be able to handle a lot of cases for component-based function [obviously not implemented].
+
+One trick that worked particularly well (especially for filling diagram with single color) was to start from corners and gradually fill towards the middle. I used a similar technique for general case trying to minimize score while only considering outside cells.
+
+Other things that I haven't implemented:
+- When going for single color tests, try to spread the initial paths evenly around the diagram
+- Alternative way would be to force paths going through specific cells.
+- Exploit the fact that all of (b) affect only 2 cells and create complex moves that affect a pair of cells that doesn't have to be neighboring.
+- Experiment more with different outside->inside orders.
+
+That was a really cool problem.
+
+PS. At the end of the contest I submitted 2 solutions right after another (because it worked!). And now I'm sitting with a rather unimpressive score.
