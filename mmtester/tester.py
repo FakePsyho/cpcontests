@@ -7,24 +7,28 @@
 # HIGH PRIORITY:
 # -check for config in current dir otherwise use default & add tool to bin
 # -add parameter to use tests/run_name/. instead of tests/.
-# -test run_name, config & bin
 # -fix double printing progress (HOW?)
 # -fix problem when missing score (HOW?)
 # -add auto buckets for groups like D(3) or D=2-10(4)
 # LOW PRIORITY:
 # -show: print the # of tests for each group (line below the header?)
 # -show: add transpose
-# -add mode for finding seeds according to data (for example slowest time, highest score, etc)
-# -add comments to tester.cfg?
+# -more error checking / clearer error messages
+# -add comments to code (explaining functions should be enough)
+# -add more annotations to functions
 # -add support for custom test ranges
 # -add benchmark file (when -p, compares the progress)
+# -add "--data LATEST" so that newest res file is always used for metadata
+# -fix grouping/filtering if data file doesn't contain all test cases
+# -add warnings if data is not present for all test cases?
+# -add support for custom scoring (cfg would be python code?)
 # -add RUNNER parameters (like for hash code) (Moved to RUNNER?)
 # -add batching? (Moved to RUNNER?)
 # -sync with RUNNER? (how?)
 # -add cleanup on ctrl+c (what that would be?)
 # -add to pypi
 # -automatic way to install dependencies (pip install tabulate + ??)
-# -change to subparsers (execution vs show?)
+# -change to subparsers (exec / show / find?)
 # ???:
 # -is cfg[...][...] really the best way to store config? converting types is really ugly :(
 # -is it possible to shrink the column name with tabulate (cur min is header width + 2 spaces)
@@ -50,7 +54,7 @@ args = None
 global cfg
 cfg = None
 
-CONFIG_PATH = 'tester.cfg'
+DEFAULT_CONFIG_PATH = 'tester.cfg'
 
 tests_queue = queue.Queue()
 results_queue = queue.Queue()
@@ -72,7 +76,6 @@ def run_test(seed) -> Dict:
     if not os.path.exists(os.path.dirname(output_path)):
         os.mkdir(os.path.dirname(output_path))
     
-    # print(f'{cfg["general"]["run_cmd"]} -exec "{args.exec}" -seed {seed} {args.tester_arguments} > {output_path}')
     subprocess.run(f'{cfg["general"]["run_cmd"]} -exec "{args.exec}" -seed {seed} {args.tester_arguments} > {output_path}', shell=True)
     rv = {'id': seed}
     with open(output_path) as f:
@@ -116,7 +119,6 @@ def load_res_file(path) -> Dict[int, float]:
     return {result['id']: result for result in results} 
 
 
-# TODO: add support for min/max/raw/custom (pass function)
 def process_raw_scores(scores: List[float], scoring: str): 
     if scoring=='raw':
         return scores
@@ -182,7 +184,6 @@ def show_summary(runs: Dict[str, Dict[int, float]], tests: Union[None, List[int]
         total_scores = {run_name: 0.0 for run_name in runs}
         for test in group_test:
             scores = process_raw_scores([run_results[test]['score'] for run_results in runs.values()], args.scoring)
-            # print(max([run_results[test] for run_results in runs.values()]))
             for run_name, score in zip(runs.keys(), scores):
                 total_scores[run_name] += score
                 total_fails[run_name] += 1 if score <= 0 else 0
@@ -197,8 +198,6 @@ def show_summary(runs: Dict[str, Dict[int, float]], tests: Union[None, List[int]
     if args.scale:
         total_scores = {run_name: score * args.scale / len(tests) for run_name, score in total_scores.items()}
     longest_name = max([len(run_name) for run_name in runs])
-    # for run_name in runs:
-        # print(run_name + ' '*(longest_name+1-len(run_name)), total_scores[run_name], total_zeros[run_name])
         
     print(tabulate.tabulate(table, headers=headers))
         
@@ -206,7 +205,7 @@ def show_summary(runs: Dict[str, Dict[int, float]], tests: Union[None, List[int]
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tester for Marathon Matches')
     parser.add_argument('name', type=str, nargs='?', default=None, help='name of the run') 
-    parser.add_argument('-c', '--config', type=str, default=CONFIG_PATH, help='path to cfg file')
+    parser.add_argument('-c', '--config', type=str, default=DEFAULT_CONFIG_PATH, help='path to cfg file')
     parser.add_argument('-t', '--tests_no', type=int, help='number of tests to run')
     parser.add_argument('-m', '--threads_no', type=int, help='number of threads to use') 
     parser.add_argument('-e', '--exec', type=str, default=None, help='executable for the tester') 
