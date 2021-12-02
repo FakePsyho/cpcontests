@@ -11,6 +11,8 @@
 # -fix problem when missing score (HOW?)
 # -add auto buckets for groups like D(3) or D=2-10(4)
 # LOW PRIORITY:
+# -use --tests for --find?
+# -add wrapper for fatal errors
 # -show: print the # of tests for each group (line below the header?)
 # -show: add transpose
 # -more error checking / clearer error messages
@@ -35,6 +37,7 @@
 
 
 import tabulate
+import re
 import math
 import sys
 import os
@@ -61,6 +64,9 @@ results_queue = queue.Queue()
 
 
 def try_str_to_numeric(x):
+    if x is None:
+        return None
+
     try: 
         return int(x)
     except ValueError:
@@ -149,6 +155,9 @@ def show_summary(runs: Dict[str, Dict[int, float]], tests: Union[None, List[int]
     if not tests:
         tests_used = [set(run_results.keys()) for run_name, run_results in runs.items()]
         tests = tests_used[0].intersection(*tests_used[1:])
+    else:
+        # error check if tests are cointained in intersection of all results files?
+        pass
 
     if not data and (filter or groups):
         print('[Error] Filter used but no data is provided')
@@ -206,7 +215,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tester for Marathon Matches')
     parser.add_argument('name', type=str, nargs='?', default=None, help='name of the run') 
     parser.add_argument('-c', '--config', type=str, default=DEFAULT_CONFIG_PATH, help='path to cfg file')
-    parser.add_argument('-t', '--tests_no', type=int, help='number of tests to run')
+    parser.add_argument('-t', '--tests', type=str, help='number of tests to run, range of seeds (e.g. A-B) or the name of the JSON/text file with the list of seeds')
     parser.add_argument('-m', '--threads_no', type=int, help='number of threads to use') 
     parser.add_argument('-e', '--exec', type=str, default=None, help='executable for the tester') 
     parser.add_argument('-p', '--progress', action='store_true', help='shows current progress when testing') 
@@ -239,7 +248,7 @@ if __name__ == '__main__':
             return value.lower() in ['true', 'yes']
         return type(value)
         
-    args.tests_no = args.tests_no or convert(cfg['default']['tests_no'], int)
+    args.tests = try_str_to_numeric(args.tests or convert(cfg['default']['tests']))
     args.threads_no = args.threads_no or convert(cfg['default']['threads_no'], int)
     args.exec = args.exec or convert(cfg['default']['exec'], str)
     args.progress = args.progress or convert(cfg['default']['progress'], bool)
@@ -270,6 +279,29 @@ if __name__ == '__main__':
             print(json.dumps(results[test]))
         sys.exit(0)
         
+    if args.tests is None:
+        pass
+    elif isinstance(args.tests, int):
+        args.tests = list(range(1, args.tests + 1))
+    elif re.search('[a-zA-Z]', args.tests):
+        if not os.path.exists(args.tests):
+            print(f'Fatal Error: Cannot locate {args.tests} file')
+            sys.exit(1)
+
+        with open(args.tests) as f:
+            lines = f.read().splitlines()
+        assert len(lines) > 0
+        
+        if isinstance(try_str_to_numeric(lines[0]), int):
+            args.tests = [int(line) for line in lines]
+        else:
+            args.tests = [json.loads(line)['id'] for line in lines]
+    else:
+        assert '-' in args.tests
+        lo, hi = args.tests.split('-')
+        lo = try_str_to_numeric(lo)
+        hi = try_str_to_numeric(hi)
+        args.tests = list(range(lo, hi + 1))
     
     # Mode: Summary 
     if args.show:
@@ -283,9 +315,7 @@ if __name__ == '__main__':
         
         data_file = load_res_file(args.data) if args.data and os.path.isfile(args.data) else None
         
-        # show_summary(results, args.tests_no)
-        # FIX: args.tests_no doesn't really work
-        show_summary(results, tests=None, data=data_file, groups=args.groups, filters=args.filters)
+        show_summary(results, tests=args.tests, data=data_file, groups=args.groups, filters=args.filters)
         sys.exit(0)
 
 
@@ -293,8 +323,11 @@ if __name__ == '__main__':
     if not os.path.exists(cfg['general']['tests_dir']):
         os.mkdir(cfg['general']['tests_dir'])
         
+    if not args.tests:
+        print('[Fatal Error] You need to specify tests to run, use --tests option')
+        sys.exit(1)
+    
     assert args.threads_no >= 1
-    assert args.tests_no >= 1
     fout = sys.stdout
     if args.name:
         fout = open(f'{cfg["general"]["results_dir"]}/{args.name}{cfg["general"]["results_ext"]}', 'w')
@@ -304,9 +337,9 @@ if __name__ == '__main__':
     
     try:
         start_time = time.time()
-        for i in range(1, 1+args.tests_no):
-            tests_queue.put(i)
-        tests_left = list(range(1, 1+args.tests_no)) 
+        for id in args.tests:
+            tests_queue.put(id)
+        tests_left = args.tests
         workers = [Thread(target=worker) for _ in range(args.threads_no)]
         for worker in workers:
             worker.start()
