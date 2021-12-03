@@ -18,8 +18,6 @@
 # -more error checking / clearer error messages
 # -add comments to code (explaining functions should be enough)
 # -add more annotations to functions
-# -add support for custom test ranges
-# -add benchmark file (when -p, compares the progress)
 # -add "--data LATEST" so that newest res file is always used for metadata
 # -fix grouping/filtering if data file doesn't contain all test cases
 # -add warnings if data is not present for all test cases?
@@ -156,7 +154,7 @@ def show_summary(runs: Dict[str, Dict[int, float]], tests: Union[None, List[int]
         tests_used = [set(run_results.keys()) for run_name, run_results in runs.items()]
         tests = tests_used[0].intersection(*tests_used[1:])
     else:
-        # error check if tests are cointained in intersection of all results files?
+        # TODO: error check if tests are cointained in intersection of all results files?
         pass
 
     if not data and (filter or groups):
@@ -222,9 +220,9 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--tester_arguments', type=str, default='', help='additional arguments for the tester')
     parser.add_argument('-b', '--benchmark', type=str, default=None, help='benchmark res file to test against')
     parser.add_argument('-s', '--show', action='store_true', help='shows current results') 
-    parser.add_argument('--data', type=str, default=None, help='file with metadata, used for grouping and filtering') #TODO: implement
-    parser.add_argument('--filters', type=str, default=None, nargs='+', help='filters results based on criteria') #TODO: implement
-    parser.add_argument('--groups', type=str, default=None, nargs='+', help='groups results into different groups based on criteria') #TODO: implement
+    parser.add_argument('--data', type=str, default=None, help='file with metadata, used for grouping and filtering; in order to always use latest results file set it to LATEST') 
+    parser.add_argument('--filters', type=str, default=None, nargs='+', help='filters results based on criteria') 
+    parser.add_argument('--groups', type=str, default=None, nargs='+', help='groups results into different groups based on criteria') 
     parser.add_argument('--scale', type=float, help='sets scaling of results') 
     parser.add_argument('--scoring', type=str, default=None, help='sets the scoring function used for calculating ranking')
     parser.add_argument('--sorting', type=str, default=None, choices=['name', 'date'], help='sets how the show runs are sorted')
@@ -279,6 +277,7 @@ if __name__ == '__main__':
             print(json.dumps(results[test]))
         sys.exit(0)
         
+    # Parse args.tests
     if args.tests is None:
         pass
     elif isinstance(args.tests, int):
@@ -313,6 +312,8 @@ if __name__ == '__main__':
             
         results = {os.path.basename(file).split('.')[0]: load_res_file(file) for file in results_files}
         
+        if args.data == 'LATEST':
+            _, args.data = sorted(zip([os.path.getmtime(result_file) for result_file in results_files], results_files))[-1]
         data_file = load_res_file(args.data) if args.data and os.path.isfile(args.data) else None
         
         show_summary(results, tests=args.tests, data=data_file, groups=args.groups, filters=args.filters)
