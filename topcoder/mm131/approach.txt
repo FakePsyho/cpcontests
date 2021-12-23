@@ -1,0 +1,33 @@
+[Source code](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/mm131/StopTheElves.cpp) (quite ugly except maybe for the dynamic maxflow/mincut code)
+
+That was an interesting problem. At first, I thought that problem might be a bit unintestering (optimizing mincut) and I only wanted to try out the tester that I was writing on & off since TCO. But the more I dug into it, the more fun it turned out to be.
+
+My solution does only the blocking part. I tried adding proper "maintaining perimeter" trapping style last minute, but as @nika mentioned, it turned out to be a much harder strategy to implement. 
+
+In order to choose the number of presents I'm defending at the start of the test, I went the lazy way and run 20K tests with different options and I did some simple data analysis and chose the best values for each type of the test. I considered writing ML model for predicing that 😂 I definitely felt into trap of finding excuses into adding new features to tester (I feel like I'm writing promotional content now) instead of actually solving the problem. 
+
+I'm computing maxflow dynamically based on the previous state (i.e. I can add/remove a present and recompute the mincut in O(N^2) instead of O(N^3) if doing it from scratch). This allowed for using hill-climbing on the set of presents in order to minimize the mincut. I'm also able to dynamically recompute the set of presents I'm defending in the middle of the run. I got massive improvements from updating the list of presents on the fly, but that might be the result of being quite bad at correctly choosing the set of presents at the start of the test.
+
+Few interesting things that I believe were not mentioned:
+- If you're only blocking, in theory you're just trying to minimize the number of boxes left in the end. For tests with high C * elfP, high N & high number of trees, you can abuse tight entrances (i.e. parts of the map that has a single entrance in order to get to any present) to essentially not waste any boxes in the beginning of the test.
+- It's possible to trap elf with present with another elf. This situation:
+```
+.T.
+TET
+.e.
+```
+is essentially a stalemate if there are no more boxes/presents available. I haven't tried it, but it looked like a huge improvement over tests where the optimal solution is to not use boxes at all.
+
+Example Scores:
+```
+{"id": 1, "score": 318.0, "time": 169.0}
+{"id": 2, "score": 6709.0, "time": 7765.0}
+{"id": 3, "score": 8227.0, "time": 7346.0}
+{"id": 4, "score": 570.0, "time": 160.0}
+{"id": 5, "score": 10553.0, "time": 7132.0}
+{"id": 6, "score": 897.0, "time": 180.0}
+{"id": 7, "score": 10318.0, "time": 6484.0}
+{"id": 8, "score": 616.0, "time": 6480.0}
+{"id": 9, "score": 3652.0, "time": 6762.0}
+{"id": 10, "score": 1974.0, "time": 187.0}
+```
