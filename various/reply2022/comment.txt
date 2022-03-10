@@ -1,0 +1,2 @@
+My solution was used to generate results for tests #1, #2 & #4. #3 & #5 were solved by custom greedy algorithm with #3 further optimized by SA. It would be same case for #5 but we ran out of time.
+Not sure what parameters (mainly t0 & mt) were used to get those exact results.
