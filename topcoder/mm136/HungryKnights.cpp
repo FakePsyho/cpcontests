@@ -1,7 +1,7 @@
 // Author: Psyho
 // Twitter: https://twitter.com/fakepsyho
 
-// #define SILENT
+#define SILENT
  
 #include <bits/stdc++.h>
 #include <sys/time.h>
@@ -169,7 +169,7 @@ VPII  gr_side2[MAX_N*MAX_N][MAX_C];
 #ifdef VM
 const double TIME_LIMIT = 9.7 * 0.7;
 #else
-const double TIME_LIMIT = 9.7 * 10;
+const double TIME_LIMIT = 9.7;
 #endif
 
 pair<int, VC<Move>> greedy(bool fast = false) {
