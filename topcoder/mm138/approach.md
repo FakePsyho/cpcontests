@@ -1,7 +1,9 @@
 
 ## Links
 [Problem Statement](https://www.topcoder.com/challenges/30278915)
+
 [Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/mm138/DiceRoller.cpp) - My final submission minus dead code.
+
 [Post Contest Solution](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/mm138/DiceRoller_post.cpp) - Final Solution + ideas from RafbillFr solution (more info below)
 
 ## Solution
