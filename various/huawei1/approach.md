@@ -1,5 +1,6 @@
 ## Links
 [Problem Statement](https://codeforces.com/contest/1752/problem/A)
+
 [Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/various/huawei1/main.cpp) - the code is a complete mess since there was no reason for any refactoring
 ## Problem
 The problem is fairly bloated, but it's turns out it's an interesting and rather unusual puzzle. Each test case consists of only 8 numbers, so you can immediately extract them with just a few submits (and pretty much everyone did exactly that). This means you can save CF some server costs and just solve the problem locally. It was also rather clear that it should be reasonable easy to get perfect/near-perfect solution.
