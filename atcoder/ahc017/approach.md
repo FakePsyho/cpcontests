@@ -1,7 +1,7 @@
 ## Links
 [Problem Statement](https://atcoder.jp/contests/ahc017)
 
-[Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/ahc017/main.cpp) - Final submission. Relatively clean.
+[Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/ahc017/main.cpp) - Final submission. Relatively clean.
 
 ## Intro
 
