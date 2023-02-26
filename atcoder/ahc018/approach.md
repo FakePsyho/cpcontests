@@ -2,9 +2,9 @@
 
 [Problem Statement](https://atcoder.jp/contests/ahc018)
 
-[Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/ahc019/main.cpp) - Final submission. 
+[Final Solution](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/ahc018/main.cpp) - Final submission. 
 
-[Clean Solution](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/ahc019/main_19.cpp) - 19th submit. Score is ~3% lower but the code is much simpler (around 1/3 shorter). I'd recommend looking here first and then looking at the diff between this and the final one.
+[Clean Solution](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/ahc018/main_19.cpp) - 19th submit. Score is ~3% lower but the code is much simpler (around 1/3 shorter). I'd recommend looking here first and then looking at the diff between this and the final one.
 
 
 ## Intro
