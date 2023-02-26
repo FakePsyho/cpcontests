@@ -20,7 +20,7 @@ If you want to understand tiny details, I highly recommend looking at the code s
 
 ## Final Approach
 
-![](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/mm143/seed100047.gif)
+![](https://github.com/FakePsyho/cpcontests/blob/master/topcoder/mm143/seed100047.mp4)
 
 1. Create a graph consisting of water sources, houses and predetermined grid points. Cost of an edge is based on the manhattan distance between those two points and dig stats so far on those two specific cells.
 2. Find the shortest path between any source (either water source or a tile where water already flows) and any house. On that path, choose the vertex that's not yet fully excavated. Tie-breakers: (a) smaller number of digs so far (b) closer distance to the target.
