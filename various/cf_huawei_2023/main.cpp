@@ -541,7 +541,7 @@ int main(int argc, char **argv) {
     const double tn = (frames[0].len == 1 ? 1e-6 : 1e-9);
     double temp = t0;
 
-    const double TIME_LIMIT = (1.920 - elapsed()) * 10;
+    const double TIME_LIMIT = (1.920 - elapsed());
     const double sa_start = get_time();
 
     VVD move_weights = {
