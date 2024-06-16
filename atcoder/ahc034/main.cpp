@@ -98,7 +98,7 @@ static RNG rng;
 
 // SOLUTION
 
-const double TIME_LIMIT = 1.9 * 10;
+const double TIME_LIMIT = 1.9;
 
 const int N = 20;
 const int N2 = N*N;
