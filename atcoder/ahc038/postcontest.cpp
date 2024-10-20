@@ -3,6 +3,7 @@
 
 // TEMPLATE
 
+
 #pragma GCC optimize "Ofast,omit-frame-pointer,inline,unroll-all-loops"
 
 #include <bits/stdc++.h>
