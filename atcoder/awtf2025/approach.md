@@ -1,15 +1,18 @@
 ## Links
 
+[Humans vs AI](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/awtf2025/humansvsai.md) - separate write-up about AI
+
 [Problem Statement](https://atcoder.jp/contests/awtf2025heuristic/tasks/awtf2025heuristic_a)
 
 [Final Submission](https://github.com/FakePsyho/cpcontests/blob/master/atcoder/awtf2025/main.cpp) - final submission with dead code removed
+
 
 
 ## Intro
 
 This write-up is going to be different from what I usually write. In most cases, I only talk about the final solution and provide data on ablation runs. But since this post is likely to reach a lot of people who don't have much exposure to competitive programming, it's going to focus more on the psychological aspect. 
 
-I decided to not include my comments about the AI model to keep this shorter. I might do a separate post about it if there's demand for that (so please let me know).
+~~I decided to not include my comments about the AI model to keep this shorter. I might do a separate post about it if there's demand for that (so please let me know).~~
 
 
 ## What is competitive programming
